@@ -278,9 +278,6 @@ function callback(results, status) {
   }
 }
 
-
-var boundListenerArray = [];
-
 function createMarker(place) {
   var placeLoc = place.geometry.location;
   var marker = new google.maps.Marker({
@@ -302,24 +299,42 @@ function createMarker(place) {
 
 }
 
-function changeCenter(){
+function changeCenter() {
     centerlng = map.getCenter().lng();
     centerlat = map.getCenter().lat();
     theZoom = map.getZoom();
 }
 
-$(document).ready(function() {
-  boundListenerArray.push(google.maps.event.addListener(map, "bounds_changed", function() {
-      if (boundListenerArray.length > 1) {
-        google.maps.event.removeListener(
-          boundListenerArray[boundListenerArray.length - 1]
-        );
-      }
+function calibrateRadius() {
+    theRadius = 591657550.5;
 
-      setTimeout(function() {
-        changeCenter();
-        // initMap();
-      }, 2000);
-    })
-  );
-});
+    for (var i = 1;i < theZoom;i++) {
+        theRadius = theRadius / 2;
+    }
+}
+
+// $(document).ready(function() {
+//   boundListenerArray.push(google.maps.event.addListener(map, "bounds_changed", function() {
+//       if (boundListenerArray.length > 1) {
+//         google.maps.event.removeListener(
+//           boundListenerArray[boundListenerArray.length - 1]
+//         );
+//       }
+
+//       setTimeout(function() {
+//         changeCenter();
+//         // initMap();
+//       }, 2000);
+//     })
+//   );
+// });
+
+
+/********* Refresh Search Button *********/
+$('#refresh-button').on('click', () => {
+    changeCenter();
+    calibrateRadius();
+    initMap();
+    console.log(theRadius);
+    console.log(theZoom);
+})
